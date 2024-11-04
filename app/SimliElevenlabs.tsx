@@ -39,7 +39,7 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
       console.log("ElevenLabs conversation connected");
       setIsAvatarVisible(true);
       setIsLoading(false);
-      sendAudioDataToSimli();
+      // sendAudioDataToSimli();
     },
 
     onDisconnect: () => {
