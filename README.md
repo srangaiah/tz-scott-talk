@@ -1,13 +1,11 @@
-# Create Simli App (OpenAI)
+# Create Simli App (ElevenLabs)
 This starter is an example of how to create a composable Simli interaction that runs in a Next.js app.
-
-Try the live demo: https://create-simli-app-openai.vercel.app/
 
  ## Usage
  1. Rename .env_sample to .env and paste your API keys: [SIMLI-API-KEY](https://www.simli.com/profile) and [OPENAI-API-KEY](https://platform.openai.com/settings/profile?tab=api-keys) <br/> If you want to try Simli but don't have API access to these third parties, ask in Discord and we can help you out with that ([Discord Link](https://discord.gg/yQx49zNF4d)). 
 ```js
 NEXT_PUBLIC_SIMLI_API_KEY="SIMLI-API-KEY"
-NEXT_PUBLIC_OPENAI_API_KEY="OPENAI-API-KEY"
+NEXT_PUBLIC_ELEVENLABS_API_KEY="ELEVENLABS-API-KEY"
 ``` 
 
 2. Insall packages
