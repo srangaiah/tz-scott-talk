@@ -1,22 +1,24 @@
-// Utility function for object property merging
-function mergeObjects() {
-    // If native Object.assign is available, use it
-    if (Object.assign) {
-        return Object.assign.bind();
-    }
-    
-    // Fallback implementation for older browsers
-    return function(target) {
-        for (let i = 1; i < arguments.length; i++) {
-            const source = arguments[i];
-            for (let key in source) {
-                if ({}.hasOwnProperty.call(source, key)) {
-                    target[key] = source[key];
-                }
-            }
-        }
-        return target;
-    };
+// Type definitions for better type safety
+interface ConversationHandlers {
+    onConnect: (data: { conversationId: string }) => void;
+    onDisconnect: () => void;
+    onError: (message: string, details?: any) => void;
+    onDebug: (data: any) => void;
+    onMessage: (data: { source: string; message: string }) => void;
+    onStatusChange: (data: { status: string }) => void;
+    onModeChange: (data: { mode: string }) => void;
+}
+
+interface ConversationConfig extends Partial<ConversationHandlers> {
+    agentId?: string;
+    signedUrl?: string;
+}
+
+// Fixed mergeObjects implementation
+function mergeObjects<T>(...objects: Partial<T>[]): T {
+    return objects.reduce((result, current) => {
+        return Object.assign(result, current);
+    }, {} as T);
 }
 
 // Convert ArrayBuffer to Base64 string
@@ -390,13 +392,14 @@ const DEFAULT_HANDLERS = {
  * Main conversation manager class that handles audio I/O and WebSocket communication
  */
 class ConversationManager {
-    /**
-     * Creates a new conversation session
-     * @param {Object} config - Configuration options including handlers and WebSocket settings
-     */
-    static async startSession(config) {
-        // Merge provided config with default handlers
-        const settings = mergeObjects({}, DEFAULT_HANDLERS, config);
+    static async startSession(config: ConversationConfig) {
+        // Ensure we have all handlers by merging with defaults first
+        const settings = mergeObjects<ConversationHandlers & ConversationConfig>(
+            DEFAULT_HANDLERS,
+            config || {}
+        );
+
+        // Now we can safely call handlers
         settings.onStatusChange({ status: "connecting" });
 
         let audioInput = null;
@@ -404,15 +407,12 @@ class ConversationManager {
         let audioOutput = null;
 
         try {
-            // Initialize all components
             audioInput = await AudioInputHandler.create(16000);
             wsConnection = await WebSocketHandler.create(config);
             audioOutput = await AudioOutputHandler.create(wsConnection.sampleRate);
 
             return new ConversationManager(settings, wsConnection, audioInput, audioOutput);
-            
         } catch (error) {
-            // Clean up on initialization failure
             settings.onStatusChange({ status: "disconnected" });
             wsConnection?.close();
             await audioInput?.close();
