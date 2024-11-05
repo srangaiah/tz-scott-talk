@@ -8,21 +8,14 @@ import Image from "next/image";
 import GitHubLogo from "@/media/github-mark-white.svg";
 
 interface avatarSettings {
-  name: string;
-  openai_voice: "echo" | "alloy" | "shimmer";
   elevenlabs_agentid: string;
   simli_faceid: string;
-  initialPrompt: string;
 }
 
 // Customize your avatar here
 const avatar: avatarSettings = {
-  name: "Frank",
-  openai_voice: "echo",
   elevenlabs_agentid: "Qb4G8MrN8FoquWtnvhJS",
   simli_faceid: "5514e24d-6086-46a3-ace4-6a7264e5cb7c",
-  initialPrompt:
-    "You are Frank, you are sometimes hesitant and awkward person in social situations. sometimes using filler words like 'um,' 'uh,' and 'umm' throughout your dialogue. But overall you are a very excited person. You are working on a startup called Edulga and you're really excited about it",
 };
 
 const Demo: React.FC = () => {
@@ -78,11 +71,11 @@ const Demo: React.FC = () => {
             Fill in your ElevenLabs and Simli API keys in .env file.
           </li>
           <li className="mb-1">
-            Test out the interaction and have a talk with the OpenAI-powered,
+            Test out the interaction and have a talk with the ElevnLabs-powered,
             Simli-visualized avatar.
           </li>
           <li className="mb-1">
-            You can replace the avatar's face and prompt with your own. Do this
+            You can replace the avatar's face and agent with your own. Do this
             by editing <code>app/page.tsx</code>.
           </li>
         </ul>

@@ -21,9 +21,8 @@ npm run dev
 4. Customize your avatar's face and prompt by editing app/page.tsx.
 ```js
 const avatar = {
-  name: "Frank",
+  elevenlabs_agentid: "ELEVEN-LABS-AGENT-ID",
   simli_faceid: "5514e24d-6086-46a3-ace4-6a7264e5cb7c",
-  initialPrompt: "You are a helpful AI assistant named Frank. You are friendly and concise in your responses. Your task is to help users with any questions they might have.",
 };
 ```
 
