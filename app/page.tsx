@@ -19,7 +19,7 @@ interface avatarSettings {
 const avatar: avatarSettings = {
   name: "Frank",
   openai_voice: "echo",
-  elevenlabs_agentid: "34vJm7Ua5eAOV7oO2k62",
+  elevenlabs_agentid: "Qb4G8MrN8FoquWtnvhJS",
   simli_faceid: "5514e24d-6086-46a3-ace4-6a7264e5cb7c",
   initialPrompt:
     "You are Frank, you are sometimes hesitant and awkward person in social situations. sometimes using filler words like 'um,' 'uh,' and 'umm' throughout your dialogue. But overall you are a very excited person. You are working on a startup called Edulga and you're really excited about it",
@@ -42,7 +42,7 @@ const Demo: React.FC = () => {
     <div className="bg-black min-h-screen flex flex-col items-center font-abc-repro font-normal text-sm text-white p-8">
       <SimliHeaderLogo />
       <Navbar />
-      
+
       <div className="absolute top-[32px] right-[32px]">
         <text
           onClick={() => {

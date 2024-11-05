@@ -430,7 +430,7 @@ class ConversationManager {
 
         // State management
         this.lastInterruptTime = 0;
-        this.conversationMode = "listening";  // "listening" or "speaking"
+        this.conversationMode = "listening";  // "listening" or "speaking" or "interrupted"
         this.connectionStatus = "connecting"; // "connecting", "connected", "disconnecting", "disconnected"
         this.audioVolume = 1;
 
@@ -578,6 +578,7 @@ class ConversationManager {
     }
 
     async fadeOutAudio() {
+        this.updateConversationMode("interrupted");
         this.updateConversationMode("listening");
         this.audioOutput.processorNode.port.postMessage({ type: "interrupt" });
         

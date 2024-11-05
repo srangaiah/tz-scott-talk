@@ -6,6 +6,7 @@ import VideoBox from "./Components/VideoBox";
 import cn from "./utils/TailwindMergeAndClsx";
 import IconSparkleLoader from "@/media/IconSparkleLoader";
 import { send } from "process";
+import { getElevenLabsSignedUrl } from "./actions/getElevenlabsSignedURL";
 
 interface SimliElevenlabsProps {
   simli_faceid: string;
@@ -54,11 +55,11 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
 
     onModeChange(data) {
       console.log("ElevenLabs conversation mode change:", data);
-      if (data.mode === "listening") {
+      if (data.mode === "interrupted") {
         simliClient?.ClearBuffer();
       }
     },
-    
+
     onError: (error) => {
       console.error("ElevenLabs conversation error:", error);
       setError(`Conversation error: ${error}`);
@@ -69,7 +70,7 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
       simliClient.sendAudioData(audioData);
     },
   });
-  
+
   /**
    * Initializes the Simli client with the provided configuration.
    */
@@ -87,6 +88,26 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
       console.log("Simli Client initialized");
     }
   }, [simli_faceid]);
+
+  const startElevenLabsConversation = async () => {
+    // If agent is not publis then we must get signed URL from ElevenLabs
+    await getElevenLabsSignedUrl(agentId).then((res) => {
+      if ("error" in res) {
+        console.error("Failed to get ElevenLabs URL:", res.error);
+        return;
+      }
+
+      console.log("Got ElevenLabs signed URL:", res.signed_url);
+
+      // Mute ElevenLabs internal audio to only hear it from Simli's side
+      conversation.setVolume({ volume: 0 });
+
+      conversation.startSession({
+        agentId: agentId,
+        signedUrl: res.signed_url,
+      });
+    });
+  };
 
   /**
    * Handles the start of the interaction
@@ -139,20 +160,18 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
         simliClient?.sendAudioData(audioData);
         console.log("Sent initial audio data");
 
-        conversation.setVolume({ volume: 0 });
+        startElevenLabsConversation();
+      });
 
-        // Start ElevenLabs conversation
-        conversation.startSession({
-          agentId: agentId,
-        });
-
+      simliClient?.on("disconnected", () => {
+        console.log("SimliClient disconnected");
       });
     }
 
     // return () => {
     //   conversation.endSession();
     // };
-  }, [initializeSimliClient, conversation]);
+  }, [initializeSimliClient]);
 
   return (
     <>
