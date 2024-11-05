@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useConversation } from "@11labs/react";
+// import { useConversation } from "@11labs/react";
+import { useConversation } from "./simli-elevenlabs/elevenlabs-react";
 import { SimliClient } from "simli-client";
 import VideoBox from "./Components/VideoBox";
 import cn from "./utils/TailwindMergeAndClsx";
