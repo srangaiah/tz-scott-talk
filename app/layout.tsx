@@ -7,8 +7,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Simli App",
-  description: "create-simli-app (OpenAI)",
+  title: "Simli App (ElevenLabs)",
+  description: "create-simli-app (ElevenLabs)",
 };
 
 export default function RootLayout({

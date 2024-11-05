@@ -15,7 +15,7 @@ interface avatarSettings {
 // Customize your avatar here
 const avatar: avatarSettings = {
   elevenlabs_agentid: "Qb4G8MrN8FoquWtnvhJS",
-  simli_faceid: "5514e24d-6086-46a3-ace4-6a7264e5cb7c",
+  simli_faceid: "ac0679f3-fee3-41e0-be9e-05d3549a3d3f",
 };
 
 const Demo: React.FC = () => {
