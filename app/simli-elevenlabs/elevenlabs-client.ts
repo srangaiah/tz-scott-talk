@@ -7,6 +7,7 @@ interface ConversationHandlers {
     onMessage: (data: { source: string; message: string }) => void;
     onStatusChange: (data: { status: string }) => void;
     onModeChange: (data: { mode: string }) => void;
+    onAudioData: (audioData: Uint8Array) => void; // Simplified to only handle output audio
 }
 
 interface ConversationConfig extends Partial<ConversationHandlers> {
@@ -563,11 +564,16 @@ class ConversationManager {
      * Audio processing methods
      */
     async processIncomingAudio(base64Audio) {
+        const audioBuffer = base64ToArrayBuffer(base64Audio);
+        
+        // Call the new onAudioData handler with output audio only
+        this.settings.onAudioData(new Uint8Array(audioBuffer));
+        
         this.audioOutput.gainNode.gain.value = this.audioVolume;
         this.audioOutput.processorNode.port.postMessage({ type: "clearInterrupted" });
         this.audioOutput.processorNode.port.postMessage({
             type: "buffer",
-            buffer: base64ToArrayBuffer(base64Audio)
+            buffer: audioBuffer
         });
     }
 

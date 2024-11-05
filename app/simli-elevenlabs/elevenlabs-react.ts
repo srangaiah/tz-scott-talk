@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { Conversation } from './elevenlabs-client';
 
-// Type definitions
 interface ConversationConfig {
     onConnect?: (data: { conversationId: string }) => void;
     onDisconnect?: () => void;
@@ -10,22 +9,23 @@ interface ConversationConfig {
     onMessage?: (data: { source: string; message: string }) => void;
     onStatusChange?: (data: { status: string }) => void;
     onModeChange?: (data: { mode: string }) => void;
+    onAudioData?: (audioData: Uint8Array) => void; // Simplified handler
     agentId?: string;
     signedUrl?: string;
     [key: string]: any;
 }
 
-// Default handlers to prevent "not a function" errors
 const DEFAULT_HANDLERS: Required<Pick<ConversationConfig, 
     'onConnect' | 'onDisconnect' | 'onError' | 'onDebug' | 
-    'onMessage' | 'onStatusChange' | 'onModeChange'>> = {
+    'onMessage' | 'onStatusChange' | 'onModeChange' | 'onAudioData'>> = {
     onConnect: () => {},
     onDisconnect: () => {},
     onError: () => {},
     onDebug: () => {},
     onMessage: () => {},
     onStatusChange: () => {},
-    onModeChange: () => {}
+    onModeChange: () => {},
+    onAudioData: () => {} // Add default handler
 };
 
 /**
@@ -66,7 +66,8 @@ function useConversation(defaultConfig: Partial<ConversationConfig> = {}) {
         // Return pending conversation ID if exists
         if (pendingConversationRef.current) {
             const conversation = await pendingConversationRef.current;
-            return conversation.getId();
+            // return conversation.getId();
+            return conversation;
         }
 
         try {
@@ -86,6 +87,10 @@ function useConversation(defaultConfig: Partial<ConversationConfig> = {}) {
                         // Call the user's handler if provided
                         defaultConfig.onStatusChange?.(({ status }));
                         config.onStatusChange?.(({ status }));
+                    },
+                    onAudioData: (audioData: Uint8Array) => {
+                        defaultConfig.onAudioData?.(audioData);
+                        config.onAudioData?.(audioData);
                     }
                 }
             );
@@ -95,7 +100,8 @@ function useConversation(defaultConfig: Partial<ConversationConfig> = {}) {
 
             // Await conversation initialization
             conversationRef.current = await pendingConversationRef.current;
-            return conversationRef.current.getId();
+            // return conversationRef.current.getId();
+            return conversationRef.current;
             
         } finally {
             pendingConversationRef.current = null;
@@ -115,6 +121,9 @@ function useConversation(defaultConfig: Partial<ConversationConfig> = {}) {
      * Sets the volume for the conversation
      */
     const setVolume = ({ volume }: { volume: number }) => {
+        pendingConversationRef.current?.then(conversation => {
+            conversation.setVolume({ volume });
+        });
         conversationRef.current?.setVolume({ volume });
     };
 

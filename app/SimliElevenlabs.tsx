@@ -51,22 +51,24 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
     onMessage: (message) => {
       console.log("ElevenLabs conversation message:", message);
     },
+
+    onModeChange(data) {
+      console.log("ElevenLabs conversation mode change:", data);
+      if (data.mode === "listening") {
+        simliClient?.ClearBuffer();
+      }
+    },
     
     onError: (error) => {
       console.error("ElevenLabs conversation error:", error);
       setError(`Conversation error: ${error}`);
     },
-  });
 
-  /**
-   * Get the input byte frequency data from the conversation and send it to Simli client.
-   */
-  const sendAudioDataToSimli = () => {
-    const audioData = conversation.getOutputByteFrequencyData();
-    console.log("Sending audio data to Simli client:", audioData);
-    simliClient?.sendAudioData(audioData as Uint8Array);
-    sendAudioDataToSimli();
-  };
+    onAudioData: (audioData: Uint8Array) => {
+      console.log("ElevenLabs conversation audio data:", audioData);
+      simliClient.sendAudioData(audioData);
+    },
+  });
   
   /**
    * Initializes the Simli client with the provided configuration.
@@ -137,10 +139,13 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
         simliClient?.sendAudioData(audioData);
         console.log("Sent initial audio data");
 
+        conversation.setVolume({ volume: 0 });
+
         // Start ElevenLabs conversation
         conversation.startSession({
           agentId: agentId,
         });
+
       });
     }
 
