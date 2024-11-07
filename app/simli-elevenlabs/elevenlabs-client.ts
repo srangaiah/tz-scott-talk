@@ -472,6 +472,7 @@ class ConversationManager {
 
             switch (data.type) {
                 case "interruption":
+                    this.updateConversationMode("interrupted");
                     this.handleInterruption(data);
                     break;
                 case "agent_response":
@@ -578,7 +579,6 @@ class ConversationManager {
     }
 
     async fadeOutAudio() {
-        this.updateConversationMode("interrupted");
         this.updateConversationMode("listening");
         this.audioOutput.processorNode.port.postMessage({ type: "interrupt" });
         

@@ -6,7 +6,7 @@ import VideoBox from "./Components/VideoBox";
 import cn from "./utils/TailwindMergeAndClsx";
 import IconSparkleLoader from "@/media/IconSparkleLoader";
 import { send } from "process";
-import { getElevenLabsSignedUrl } from "./actions/getElevenlabsSignedURL";
+import { getElevenLabsSignedUrl } from "./actions/actions";
 
 interface SimliElevenlabsProps {
   simli_faceid: string;
@@ -47,6 +47,8 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
     onDisconnect: () => {
       console.log("ElevenLabs conversation disconnected");
       setIsAvatarVisible(false);
+      simliClient?.ClearBuffer();
+      simliClient?.close();
     },
 
     onMessage: (message) => {
@@ -100,7 +102,7 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
       console.log("Got ElevenLabs signed URL:", res.signed_url);
 
       // Mute ElevenLabs internal audio to only hear it from Simli's side
-      conversation.setVolume({ volume: 0 });
+      conversation.setVolume({ volume: 0.0 });
 
       conversation.startSession({
         agentId: agentId,
