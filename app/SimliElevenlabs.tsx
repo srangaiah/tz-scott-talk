@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-// import { useConversation } from "@11labs/react";
 import { useConversation } from "./simli-elevenlabs/elevenlabs-react";
 import { SimliClient } from "simli-client";
 import VideoBox from "./Components/VideoBox";
@@ -102,7 +101,7 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
       console.log("Got ElevenLabs signed URL:", res.signed_url);
 
       // Mute ElevenLabs internal audio to only hear it from Simli's side
-      conversation.setVolume({ volume: 0.0 });
+      conversation.setVolume({ volume: 0 });
 
       conversation.startSession({
         agentId: agentId,

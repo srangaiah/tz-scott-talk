@@ -432,7 +432,7 @@ class ConversationManager {
         this.lastInterruptTime = 0;
         this.conversationMode = "listening";  // "listening" or "speaking" or "interrupted"
         this.connectionStatus = "connecting"; // "connecting", "connected", "disconnecting", "disconnected"
-        this.audioVolume = 1;
+        this.audioVolume = 0;
 
         // Frequency data buffers for visualizations
         this.inputFrequencyData = null;
