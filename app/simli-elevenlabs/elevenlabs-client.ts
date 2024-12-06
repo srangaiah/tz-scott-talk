@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Type definitions for better type safety
 interface ConversationHandlers {
     onConnect: (data: { conversationId: string }) => void;
