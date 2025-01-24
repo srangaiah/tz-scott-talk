@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useConversation } from "./simli-elevenlabs/elevenlabs-react";
 import { SimliClient } from "simli-client";
 import VideoBox from "./Components/VideoBox";
@@ -81,8 +81,8 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
         apiKey: process.env.NEXT_PUBLIC_SIMLI_API_KEY,
         faceID: simli_faceid,
         handleSilence: true,
-        videoRef: videoRef,
-        audioRef: audioRef,
+        videoRef: videoRef.current,
+        audioRef: audioRef.current,
       };
 
       simliClient.Initialize(SimliConfig as any);
@@ -114,6 +114,23 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
    * Handles the start of the interaction
    */
   const handleStart = useCallback(async () => {
+    initializeSimliClient();
+
+    if (simliClient) {
+      simliClient?.on("connected", () => {
+        console.log("SimliClient connected");
+        const audioData = new Uint8Array(6000).fill(0);
+        simliClient?.sendAudioData(audioData);
+        console.log("Sent initial audio data");
+
+        startElevenLabsConversation();
+      });
+
+      simliClient?.on("disconnected", () => {
+        console.log("SimliClient disconnected");
+      });
+    }
+
     setIsLoading(true);
     setError("");
     onStart();
@@ -149,30 +166,6 @@ const SimliElevenlabs: React.FC<SimliElevenlabsProps> = ({
     onClose();
     console.log("Interaction stopped");
   }, [conversation, onClose]);
-
-  // Initialize Simli client on mount
-  useEffect(() => {
-    initializeSimliClient();
-
-    if (simliClient) {
-      simliClient?.on("connected", () => {
-        console.log("SimliClient connected");
-        const audioData = new Uint8Array(6000).fill(0);
-        simliClient?.sendAudioData(audioData);
-        console.log("Sent initial audio data");
-
-        startElevenLabsConversation();
-      });
-
-      simliClient?.on("disconnected", () => {
-        console.log("SimliClient disconnected");
-      });
-    }
-
-    // return () => {
-    //   conversation.endSession();
-    // };
-  }, [initializeSimliClient]);
 
   return (
     <>
